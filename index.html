@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#fffdf9">
-<title>翡雲悦府 D1 · 交付固定项基线</title>
+<title>翡雲悦府 D1 · 交付实景基准 V0.6</title>
 <style>
 :root{
   --bg:#f3efe7; --paper:#f7f4ee; --panel:#fffdf9; --line:#e3dccf; --ink:#2b2824; --muted:#8a8174;
@@ -227,7 +227,7 @@ main.drawer-panel #fab{opacity:0;visibility:hidden}
       <button class="btn chip" id="tgLib" data-en="◧ Library">◧ 家具库</button>
       <button class="btn chip" id="tgPanel" data-en="Properties ◨">属性 ◨</button>
     </div>
-    <div class="brand"><b data-en="Feiyun Yuefu 120㎡ · Interior Design">翡雲悦府 120㎡ · 装修设计</b><span id="subtitle">D1 · 交付固定项基线 V0.5 · 尺寸单位 mm</span></div>
+    <div class="brand"><b data-en="Feiyun Yuefu 120㎡ · Interior Design">翡雲悦府 120㎡ · 装修设计</b><span id="subtitle">D1 · 交付实景基准 V0.6 · 尺寸单位 mm</span></div>
     <div class="grp seg" id="viewSeg" title="切换 2D / 3D (T)" data-en-title="Switch 2D / 3D (T)">
       <span class="pill"></span>
       <button class="btn" data-view="2d" data-en="2D Plan">2D 平面</button>
@@ -344,8 +344,8 @@ let LANG = (() => { try { return localStorage.getItem(LANG_KEY) === 'en' ? 'en' 
 const tr = (zh, en) => LANG === 'en' ? en : zh;
 // 内置的房间 / 材料 / 家具名称存的是中文；英文界面下显示译名，用户自己改过的名称原样显示
 const NAMES_EN = {
-  '主卫':'Master Bath', '次卧2':'Bedroom 2', '公卫':'Guest Bath', '玄关':'Foyer', '走道':'Hallway',
-  '次卧1':'Bedroom 1', '客餐厅':'Living / Dining', '阳台':'Balcony',
+  '主卫':'Master Bath', '北次卧':'North Bedroom', '公卫':'Guest Bath', '玄关':'Foyer', '走道':'Hallway',
+  '南次卧':'South Bedroom', '客餐厅':'Living / Dining', '阳台':'Balcony',
   '主卧室':'Master Bedroom', '主卫浴':'Master Bath', '小孩房':"Kids' Room", '客卫浴':'Guest Bath', '洗衣阳台':'Laundry Balcony',
   '子女房':"Children's Room", '厨房':'Kitchen', '餐厅':'Dining', '过道':'Hallway', '客厅':'Living Room', '休闲阳台':'Leisure Balcony',
   '主卧飘窗':'Master Bay Window', '子女房飘窗':"Children's Bay Window",
@@ -428,7 +428,7 @@ const R = (x0,y0,x1,y1) => [[x0,y0],[x1,y0],[x1,y1],[x0,y1]];
 
 const ROOMS = [
   {id:'mbath',name:'主卫',poly:R(200,1800,1800,4700),mat:'antislip',at:[1000,3250],reportedArea:4.64,dimW:1600,dimD:2900},
-  {id:'north',name:'次卧2',poly:R(1900,1800,4600,4700),mat:'wood',at:[3250,3250],reportedArea:7.83,dimW:2700,dimD:2900},
+  {id:'north',name:'北次卧',poly:R(1900,1800,4600,4700),mat:'wood',at:[3250,3250],reportedArea:7.83,dimW:2700,dimD:2900},
   {id:'gbath',name:'公卫',poly:R(4700,1800,6350,3700),mat:'antislip',at:[5525,2750],reportedArea:3.14,dimW:1650,dimD:1900},
 
   {id:'kitchen',name:'厨房',poly:R(6550,200,8800,3000),mat:'tile600',at:[7675,1600],reportedArea:6.30,dimW:2250,dimD:2800},
@@ -436,7 +436,7 @@ const ROOMS = [
 
   {id:'master',name:'主卧',poly:R(200,4800,3400,9250),mat:'wood',at:[1800,7100],reportedArea:14.08,dimW:3200,dimD:4450},
   {id:'hall',name:'走道',poly:[[3500,4700],[4700,4700],[4700,3700],[6350,3700],[6350,4700],[6500,4700],[6500,5900],[3500,5900]],mat:'tile800',at:[5200,5250],reportedArea:3.30,dimW:3000,dimD:1100},
-  {id:'child',name:'次卧1',poly:R(3500,6000,6350,9250),mat:'wood',at:[4925,7650],reportedArea:9.26,dimW:2850,dimD:3250},
+  {id:'child',name:'南次卧',poly:R(3500,6000,6350,9250),mat:'wood',at:[4925,7650],reportedArea:9.26,dimW:2850,dimD:3250},
 
   {id:'living',name:'客餐厅',poly:[[6350,3150],[10900,3150],[10900,9950],[6800,9950],[6800,9600],[6350,9600]],mat:'tile800',at:[8550,6500],reportedArea:29.39},
   {id:'balcony',name:'阳台',poly:[[6550,10050],[10900,10050],[10900,11650],[6800,11650],[6305,11023]],mat:'antislip',at:[8550,10850],reportedArea:7.53,dimW:4450,dimD:1600},
@@ -449,31 +449,44 @@ const ROOMS = [
 ];
 
 const FIXTURES = [
-  {name:'厨房北侧地柜',rect:[6550,200,8800,800],h:.90,color:'#efb4b0'},
-  {name:'厨房西侧地柜',rect:[6550,800,7100,3000],h:.90,color:'#efb4b0'},
-  {name:'厨房东侧地柜',rect:[8200,800,8800,3000],h:.90,color:'#efb4b0'},
+  // ===== 厨房：SKP尺寸图 + 实景14/15 =====
+  {name:'厨房北侧地柜',rect:[6550,200,8800,800],h:.90,color:'#efb4b0',locked:true,source:'skp+video'},
+  {name:'厨房西侧地柜',rect:[6550,800,7100,3000],h:.90,color:'#efb4b0',locked:true,source:'skp+video'},
+  {name:'厨房东侧地柜',rect:[8200,800,8800,3000],h:.90,color:'#efb4b0',locked:true,source:'skp+video'},
 
-  {name:'高柜500',rect:[6550,3050,7100,3550],h:2.40,color:'#efd49a'},
-  {name:'高柜600-1',rect:[6550,3550,7100,4150],h:2.40,color:'#efd49a'},
-  {name:'高柜600-2',rect:[6550,4150,7100,4750],h:2.40,color:'#efd49a'},
+  // 厨房/餐厅交界处高柜组：视频可确认咖啡设备位、零食抽拉柜和储物高柜
+  {name:'咖啡/电器高柜500',rect:[6550,3050,7100,3550],h:2.40,color:'#efd49a',locked:true,source:'skp+video',showLabel:true},
+  {name:'餐厅零食抽拉柜600',rect:[6550,3550,7100,4150],h:2.40,color:'#efd49a',locked:true,source:'video18',showLabel:true},
+  {name:'餐厨储物高柜600',rect:[6550,4150,7100,4750],h:2.40,color:'#efd49a',locked:true,source:'skp+video'},
 
-  {name:'玄关浅柜550-1',rect:[9100,2000,9500,2550],h:2.40,color:'#cde8d5'},
-  {name:'玄关浅柜550-2',rect:[9100,2550,9500,3100],h:2.40,color:'#cde8d5'},
+  // ===== 入户玄关：实景01/02/17 =====
+  {name:'玄关鞋柜550',rect:[9100,2000,9500,2550],h:2.40,color:'#cde8d5',locked:true,source:'skp+video',showLabel:true},
+  {name:'玄关储物柜550',rect:[9100,2550,9500,3100],h:2.40,color:'#cde8d5',locked:true,source:'skp+video'},
+  {name:'玄关智能面板位',rect:[10780,2550,10900,3000],yb:1.05,h:.55,color:'#39424b',locked:true,source:'video17'},
 
-  {name:'客餐厅浅柜900-1',rect:[10550,4000,10900,4900],h:2.40,color:'#dfcdea'},
-  {name:'客餐厅浅柜900-2',rect:[10550,4900,10900,5800],h:2.40,color:'#dfcdea'},
+  // ===== 客餐厅：实景09/10/16/18 =====
+  {name:'客餐厅浅柜900-1',rect:[10550,4000,10900,4900],h:2.40,color:'#dfcdea',locked:true,source:'skp+video'},
+  {name:'客餐厅浅柜900-2',rect:[10550,4900,10900,5800],h:2.40,color:'#dfcdea',locked:true,source:'skp+video'},
+  {name:'客厅壁炉',rect:[10520,6200,10900,8550],h:1.05,color:'#d9d1c7',locked:true,source:'video09+16',confidence:'position-high-size-estimated',showLabel:true},
 
-  {name:'隔板',rect:[5950,4630,6550,4750],h:2.40,color:'#b9d8e8'},
+  // ===== 主卧：实景03/04/05 =====
+  // 入口衣柜位置由“1200走道/衣柜区”+视频03确定；精确分格待复尺。
+  {name:'主卧衣柜',rect:[200,4800,2600,5400],h:2.40,color:'#d8d1c5',locked:true,source:'video03+skp-zone',confidence:'position-medium-size-estimated',showLabel:true},
+  // 书桌在南窗相邻侧墙，为悬浮抽屉式固定桌。
+  {name:'主卧悬浮书桌',rect:[2950,6500,3400,8750],yb:.66,h:.18,color:'#e0d6c7',locked:true,source:'video05',confidence:'position-high-size-estimated',showLabel:true},
 
-  // 用户确认保留：客厅原交付壁炉/岩板电视墙。
-  // 平面足迹按现场照片与现有墙线做工作定位；精确进深待视频关键帧/复尺再锁定。
-  {name:'客厅壁炉',rect:[10520,6200,10900,8550],h:1.05,color:'#d9d1c7',locked:true,confidence:'position-high-size-estimated'},
+  // ===== 南次卧：实景11；用户明确保留 =====
+  {name:'南次卧榻榻米',rect:[3600,7480,6250,9200],h:.36,color:'#d7c7aa',locked:true,source:'video11+user-confirmed',confidence:'presence-high-size-estimated',showLabel:true},
+  // 实景可确认整面固定书桌/开放格收纳；墙向按房间关系做工作定位。
+  {name:'南次卧书桌收纳墙',rect:[5900,6100,6350,8900],h:2.40,color:'#d9d0c0',locked:true,source:'video11',confidence:'presence-high-position-estimated',showLabel:true},
 
-  // 用户确认保留：南次卧原有榻榻米。
-  // 目前按南窗侧满宽平台的工作尺寸表达，避免误删；最终尺寸以现场视频/复尺为准。
-  {name:'南次卧榻榻米',rect:[3600,7480,6250,9200],h:.36,color:'#d7c7aa',locked:true,confidence:'presence-high-size-estimated'},
+  // ===== 阳台：实景07 =====
+  {name:'阳台窗下矮柜',rect:[6800,11020,10900,11650],h:.48,color:'#d9d2c8',locked:true,source:'video07',confidence:'position-high-size-estimated',showLabel:true},
+
+  // ===== 原SKP固定板件 =====
+  {name:'隔板',rect:[5950,4630,6550,4750],h:2.40,color:'#b9d8e8',locked:true,source:'skp'},
 ];
-const MATS = {
+const MATS = {const MATS = {
   wood:    {name:'橡木地板', price:320, sw:'#d8b88a'},
   walnut:  {name:'胡桃木地板', price:380, sw:'#9b7250'},
   tile800: {name:'800 地砖', price:220, sw:'#ebe6dc'},
@@ -526,7 +539,7 @@ function defaultState(){
   return {furniture:defaultFurniture(), rooms, demolished:[], measures:[]};
 }
 
-const STORE = 'feiyun-yuefu-d1-design-v5';
+const STORE = 'feiyun-yuefu-d1-delivery-master-v06';
 function load(){
   try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && Array.isArray(s.furniture)) return fixState(s); } catch(e) {}
   return null;
@@ -717,8 +730,12 @@ function renderRooms(){
   const sill = ([a,b,c,d]) => `<rect x="${a}" y="${b}" width="${c-a}" height="${d-b}" fill="#e2dacb" stroke="#b9b0a0" stroke-width="1" vector-effect="non-scaling-stroke" pointer-events="none"/>`;
   DOORS.forEach(d => s += sill(d.rect)); SLIDES.forEach(d => s += sill(d.rect));
   FIXTURES.forEach(f => {
-    const [x0,y0,x1,y1] = f.rect;
-    s += `<rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" fill="${f.color}" fill-opacity=".72" stroke="#8b8174" stroke-width="1" vector-effect="non-scaling-stroke" pointer-events="none"/>`;
+    const [x0,y0,x1,y1] = f.rect, w=x1-x0, h=y1-y0;
+    s += `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="${f.color}" fill-opacity=".72" stroke="#8b8174" stroke-width="1" vector-effect="non-scaling-stroke" pointer-events="none"/>`;
+    if (f.showLabel && Math.max(w,h) >= 900){
+      const cx=(x0+x1)/2, cy=(y0+y1)/2, fs=Math.max(105,Math.min(150,Math.min(w,h)*.23));
+      s += `<text x="${cx}" y="${cy}" font-size="${fs}" text-anchor="middle" dominant-baseline="central" fill="#514a42" transform="${h>w?`rotate(-90 ${cx} ${cy})`:''}" pointer-events="none">${esc(f.name)}</text>`;
+    }
   });
   $('#gRooms').innerHTML = s;
 }
@@ -2317,9 +2334,9 @@ function buildArch(){
     }
   });
   FIXTURES.forEach(f => {
-    const [x0,y0,x1,y1] = f.rect, h = Math.min(f.h, top);
+    const [x0,y0,x1,y1] = f.rect, yb=f.yb||0, h=Math.min(f.h, Math.max(0, top-yb));
     if (h <= .001) return;
-    const o = box(M(x1-x0), h, M(y1-y0), mat(f.color, {roughness:.55}), wx((x0+x1)/2), 0, wz((y0+y1)/2));
+    const o = box(M(x1-x0), h, M(y1-y0), mat(f.color, {roughness:.55}), wx((x0+x1)/2), yb, wz((y0+y1)/2));
     o.castShadow = o.receiveShadow = true; archUp.add(o);
   });
   [...DOORS, ...SLIDES].forEach(d => { const [x0, y0, x1, y1] = d.rect; const s = box(M(x1-x0), .012, M(y1-y0), mat('#d8d0c0', {roughness:.3}), wx((x0+x1)/2), 0, wz((y0+y1)/2)); s.castShadow = false; archFloor.add(s); });
