@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#fffdf9">
-<title>翡雲悦府 120㎡ · 装修设计</title>
+<title>翡雲悦府 D1 · 交付固定项基线</title>
 <style>
 :root{
   --bg:#f3efe7; --paper:#f7f4ee; --panel:#fffdf9; --line:#e3dccf; --ink:#2b2824; --muted:#8a8174;
@@ -227,7 +227,7 @@ main.drawer-panel #fab{opacity:0;visibility:hidden}
       <button class="btn chip" id="tgLib" data-en="◧ Library">◧ 家具库</button>
       <button class="btn chip" id="tgPanel" data-en="Properties ◨">属性 ◨</button>
     </div>
-    <div class="brand"><b data-en="Feiyun Yuefu 120㎡ · Interior Design">翡雲悦府 120㎡ · 装修设计</b><span id="subtitle">D1 · SKP细节校正版 V0.4 · 尺寸单位 mm</span></div>
+    <div class="brand"><b data-en="Feiyun Yuefu 120㎡ · Interior Design">翡雲悦府 120㎡ · 装修设计</b><span id="subtitle">D1 · 交付固定项基线 V0.5 · 尺寸单位 mm</span></div>
     <div class="grp seg" id="viewSeg" title="切换 2D / 3D (T)" data-en-title="Switch 2D / 3D (T)">
       <span class="pill"></span>
       <button class="btn" data-view="2d" data-en="2D Plan">2D 平面</button>
@@ -464,6 +464,14 @@ const FIXTURES = [
   {name:'客餐厅浅柜900-2',rect:[10550,4900,10900,5800],h:2.40,color:'#dfcdea'},
 
   {name:'隔板',rect:[5950,4630,6550,4750],h:2.40,color:'#b9d8e8'},
+
+  // 用户确认保留：客厅原交付壁炉/岩板电视墙。
+  // 平面足迹按现场照片与现有墙线做工作定位；精确进深待视频关键帧/复尺再锁定。
+  {name:'客厅壁炉',rect:[10520,6200,10900,8550],h:1.05,color:'#d9d1c7',locked:true,confidence:'position-high-size-estimated'},
+
+  // 用户确认保留：南次卧原有榻榻米。
+  // 目前按南窗侧满宽平台的工作尺寸表达，避免误删；最终尺寸以现场视频/复尺为准。
+  {name:'南次卧榻榻米',rect:[3600,7480,6250,9200],h:.36,color:'#d7c7aa',locked:true,confidence:'presence-high-size-estimated'},
 ];
 const MATS = {
   wood:    {name:'橡木地板', price:320, sw:'#d8b88a'},
@@ -518,7 +526,7 @@ function defaultState(){
   return {furniture:defaultFurniture(), rooms, demolished:[], measures:[]};
 }
 
-const STORE = 'feiyun-yuefu-d1-design-v4';
+const STORE = 'feiyun-yuefu-d1-design-v5';
 function load(){
   try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && Array.isArray(s.furniture)) return fixState(s); } catch(e) {}
   return null;
